@@ -7,7 +7,7 @@
 			<attribute name="javadoc_location" value="http://www.thebuzzmedia.com/downloads/software/imgscalr/javadoc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/Common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
 	<classpathentry kind="var" path="SW_JAR"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

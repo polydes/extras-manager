@@ -4,7 +4,7 @@
 +==========================================================================
 -->
 
-<project name="stencyl" basedir="." default="dist">
+<project name="polydes/extras-manager" basedir="." default="dist">
 	
 	<property name="pkg" value="com/polydes/extrasmanager" />
 	<property name="main" value="com.polydes.extrasmanager.ExtrasManagerExtension" />
