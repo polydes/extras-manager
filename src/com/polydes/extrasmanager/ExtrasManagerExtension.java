@@ -86,6 +86,8 @@ public class ExtrasManagerExtension extends BaseExtension
 	@Override
 	public JPanel onGameCenterActivate()
 	{
+		if(!gameOpen && Game.getGame() != null)
+			onGameOpened(Game.getGame());
 		return MainEditor.get();
 	}
 
