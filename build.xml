@@ -9,11 +9,13 @@
 	<property name="pkg" value="com/polydes/extrasmanager" />
 	<property name="main" value="com.polydes.extrasmanager.ExtrasManagerExtension" />
 	
+	<property name="dependsOn" value="stencyl-3.5.0-beta2" />
+
 	<property name="name" value="Extras Manager Extension" />
 	<property name="description" value="Manage extra data files." />
 	<property name="author" value="Justin Espedal" />
 	<property name="internalVersion" value="1" />
-	<property name="version" value="0.4.0" />
+	<property name="version" value="0.4.1" />
 	
 	<include file="../Common/build-helper.xml" as="common" />
 	

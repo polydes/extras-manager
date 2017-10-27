@@ -17,6 +17,7 @@ import com.polydes.common.ui.propsheet.PropertiesSheetSupport;
 import com.polydes.extrasmanager.app.MainEditor;
 import com.polydes.extrasmanager.data.ExtrasNodeCreator;
 import com.polydes.extrasmanager.data.FileEditor;
+import com.polydes.extrasmanager.data.FileUpdateWatcher;
 import com.polydes.extrasmanager.io.FileOperations;
 
 import stencyl.core.lib.Game;
@@ -31,6 +32,7 @@ public class ExtrasManagerExtension extends BaseExtension
 	private static ExtrasManagerExtension _instance;
 	
 	private static HierarchyModel<SysFile,SysFolder> model;
+	private static FileUpdateWatcher updateWatcher;
 	
 	private static boolean gameOpen;
 	
@@ -161,6 +163,8 @@ public class ExtrasManagerExtension extends BaseExtension
 		String imagePath = data[1];
 		FileEditor.typeProgramMap.put("text/plain", textPath);
 		FileEditor.typeProgramMap.put("image/png", imagePath);
+		
+		updateWatcher = new FileUpdateWatcher(model);
 	}
 	
 	public void loadDefaults(File templates)
@@ -192,6 +196,7 @@ public class ExtrasManagerExtension extends BaseExtension
 	{
 		super.onGameClosed(game);
 
+		updateWatcher.dispose();
 		model.dispose();
 		model = null;
 		FileMonitor.unregister();
