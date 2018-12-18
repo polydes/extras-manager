@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import com.polydes.common.nodes.HierarchyModel;
 import com.polydes.common.sys.FileMonitor;
+import com.polydes.common.sys.Mime.BasicType;
 import com.polydes.common.sys.SysFile;
 import com.polydes.common.sys.SysFolder;
 import com.polydes.common.ui.propsheet.PropertiesSheetStyle;
@@ -151,18 +152,8 @@ public class ExtrasManagerExtension extends BaseExtension
 		
 		FileOperations.templatesFile = templatesFile;
 		
-		String input = readData();
-		
-		String[] data;
-		if(input == null || input.isEmpty())
-			data = new String[] {"", ""};
-		else
-			data = input.split("\n");
-		
-		String textPath = data[0];
-		String imagePath = data[1];
-		FileEditor.typeProgramMap.put("text/plain", textPath);
-		FileEditor.typeProgramMap.put("image/png", imagePath);
+		FileEditor.typeProgramMap.put(BasicType.TEXT, readStringProp("textEditorPath", null));
+		FileEditor.typeProgramMap.put(BasicType.IMAGE, readStringProp("imageEditorPath", null));
 		
 		updateWatcher = new FileUpdateWatcher(model);
 	}
@@ -225,8 +216,8 @@ public class ExtrasManagerExtension extends BaseExtension
 				
 				sheet.build()
 					.header("Options")
-					.field("textEditor")._filePath().add()
-					.field("imageEditor")._filePath().add()
+					.field("textEditorPath").label("Text Editor")._filePath().add()
+					.field("imageEditorPath").label("Image Editor")._filePath().add()
 					.finish();
 				
 				panel.addFinalRow(new JLabel());
@@ -236,9 +227,9 @@ public class ExtrasManagerExtension extends BaseExtension
 			@Override
 			public void onPressedOK()
 			{
-				FileEditor.typeProgramMap.put("application/octet-stream", readStringProp("textEditorPath", null));
-				FileEditor.typeProgramMap.put("text/plain", readStringProp("textEditorPath", null));
-				FileEditor.typeProgramMap.put("image/png", readStringProp("imageEditorPath", null));
+				FileEditor.typeProgramMap.put(BasicType.BINARY, readStringProp("textEditorPath", null));
+				FileEditor.typeProgramMap.put(BasicType.TEXT, readStringProp("textEditorPath", null));
+				FileEditor.typeProgramMap.put(BasicType.IMAGE, readStringProp("imageEditorPath", null));
 				sheet.dispose();
 				sheet = null;
 			}

@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.polydes.common.sys.Mime;
+import com.polydes.common.sys.Mime.BasicType;
 import com.polydes.common.sys.SysFile;
 
 import stencyl.sw.util.FileHelper;
@@ -23,12 +24,12 @@ public class FilePreviewer
 	
 	public static void preview(SysFile f)
 	{
-		String type = Mime.get(f.getFile());
+		BasicType type = Mime.getType(f.getFile());
 		JComponent toPreview = null;
 		
-		if(type.startsWith("image"))
+		if(type == BasicType.IMAGE)
 			toPreview = buildImagePreview(f.getFile());
-		else if(type.startsWith("text"))
+		else if(type == BasicType.TEXT)
 			toPreview = buildTextPreview(f.getFile());
 		
 		if(toPreview != null)

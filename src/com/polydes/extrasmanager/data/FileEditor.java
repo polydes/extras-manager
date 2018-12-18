@@ -7,17 +7,18 @@ import java.util.HashMap;
 
 import com.polydes.common.sys.FileMonitor;
 import com.polydes.common.sys.Mime;
+import com.polydes.common.sys.Mime.BasicType;
 import com.polydes.extrasmanager.app.FileRenameDialog;
 
 import stencyl.sw.SW;
 
 public class FileEditor
 {
-	public static HashMap<String, String> typeProgramMap = new HashMap<String, String>();
+	public static HashMap<BasicType, String> typeProgramMap = new HashMap<BasicType, String>();
 	
 	public static void edit(File f)
 	{
-		String exec = typeProgramMap.get(Mime.get(f));
+		String exec = typeProgramMap.get(Mime.getType(f));
 		try
 		{
 			if(exec == null || exec.length() <= 2)
