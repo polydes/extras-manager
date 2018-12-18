@@ -54,6 +54,7 @@ public class MainPage extends JPanel
 		removeAll();
 		
 		treePage.dispose();
+		treePage = null;
 		
 		currView = null;
 		navwindow = null;

@@ -188,9 +188,7 @@ public class ExtrasManagerExtension extends BaseExtension
 		super.onGameClosed(game);
 
 		updateWatcher.dispose();
-		model.dispose();
 		model = null;
-		FileMonitor.unregister();
 		
 		gameDir = "";
 		extrasDir = "";
