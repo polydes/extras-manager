@@ -3,6 +3,8 @@ package com.polydes.extrasmanager.data;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.polydes.common.nodes.HierarchyModel;
 import com.polydes.common.nodes.HierarchyRepresentation;
@@ -30,6 +32,12 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 		model.removeRepresentation(this);
 	}
 	
+	private static Pattern bsPattern = Pattern.compile(Matcher.quoteReplacement("\\"));
+	private static String fs(String s)
+	{
+		return bsPattern.matcher(s).replaceAll("/");
+	}
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
@@ -44,7 +52,7 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 			
 			String extrasPath = ((SysFile) model.getRootBranch()).getFile().getAbsolutePath();
 			String modifiedPath = modified.getFile().getAbsolutePath();
-			String assetPath = "assets/data/" + modifiedPath.substring(extrasPath.length() + 1);
+			String assetPath = "assets/data/" + fs(modifiedPath.substring(extrasPath.length() + 1));
 			
 			GameInterfaceServer server = SW.get().getGameInterfaceServer();
 			
