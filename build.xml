@@ -16,6 +16,7 @@
 	<property name="author" value="Justin Espedal" />
 	<property name="internalVersion" value="1" />
 	<property name="version" value="0.4.3" />
+	<property name="website" value="http://www.polydes.com/repo/toolset/com.polydes.extrasmanager" />
 	
 	<include file="../Common/build-helper.xml" as="common" />
 	
