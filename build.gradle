@@ -1,0 +1,80 @@
+plugins {
+    id 'eclipse'
+	id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+group = 'com.polydes'
+version = rootProject.file('version.txt').text.trim()
+
+sourceSets {
+	main {
+	    java {
+            srcDir 'src'
+        }
+    }
+}
+
+processResources {
+    from('res') {
+    	into 'res/com/polydes/extrasmanager'
+    }
+    from('icon.png') {
+        into 'com/polydes/extrasmanager/res'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://www.stencyl.com/dl/maven2/releases"
+    }
+    maven {
+        url "https://www.stencyl.com/dl/maven2/snapshots"
+    }
+}
+
+dependencies {
+    //Stencyl and its dependencies
+    implementation enforcedPlatform('com.stencyl:stencyl-platform:4.1.0-SNAPSHOT')
+    compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
+    compileOnly group: 'commons-io',  name: 'commons-io'
+
+    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+}
+
+jar {
+	from {
+		configurations.runtimeClasspath.collect { zipTree(it) }
+	}
+    manifest {
+		attributes(
+			"Extension-ID": "com.polydes.extrasmanager",
+			"Extension-Main-Class": "com.polydes.extrasmanager.ExtrasManagerExtension",
+			"Extension-Version": version,
+			"Extension-Icon": "com/polydes/extrasmanager/res/icon.png",
+			"Extension-Dependencies": "stencyl-4.1.0-b10157",
+			"Extension-Type": "normal",
+			"Extension-Name": "Extras Manager Extension",
+			"Extension-Description": "Manage extra data files.",
+			"Extension-Author": "Justin Espedal",
+			"Extension-Website": "http://www.polydes.com/repo/toolset/com.polydes.extrasmanager",
+			"Extension-Repository": "http://www.polydes.com/repo",
+			"Extension-Internal-Version": "1"
+		)
+	}
+}
+
+tasks.register('installToolsetToWorkspace', Copy) {
+    from(tasks.named("jar"))
+	into stencylWorkspace+"/extensions"
+	rename { fileName -> "com.polydes.extrasmanager.jar" }
+}
+
+tasks.register('installToWorkspace') {
+	dependsOn 'installToolsetToWorkspace'
+}
