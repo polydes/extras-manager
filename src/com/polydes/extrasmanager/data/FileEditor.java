@@ -1,16 +1,16 @@
 package com.polydes.extrasmanager.data;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.polydes.common.sys.FileMonitor;
-import com.polydes.common.sys.Mime;
-import com.polydes.common.sys.Mime.BasicType;
 import com.polydes.extrasmanager.app.FileRenameDialog;
 
-import stencyl.sw.SW;
+import stencyl.app.sys.Mime;
+import stencyl.app.sys.Mime.BasicType;
+import stencyl.core.sys.FileMonitor;
+import stencyl.sw.app.main.SW;
 
 public class FileEditor
 {
@@ -54,8 +54,9 @@ public class FileEditor
 		String result = dg.getString();
 		if(result != null)
 		{
-			file.renameTo(new File(file.getParentFile(), result));
-			FileMonitor.refresh();
+			File renameTo = new File(file.getParentFile(), result);
+			file.renameTo(renameTo);
+			FileMonitor.refreshMonitorsWithFile(renameTo.getAbsolutePath());
 		}
 	}
 }

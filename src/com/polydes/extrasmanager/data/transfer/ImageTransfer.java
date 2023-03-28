@@ -1,13 +1,14 @@
 package com.polydes.extrasmanager.data.transfer;
 
-//http://sakoba.byethost13.com/2011/03/24/java-copy-and-past-image-clipboard/
-
-import java.io.*;
 import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.io.IOException;
 
 public class ImageTransfer
 {

@@ -6,16 +6,15 @@ import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.nodes.HierarchyRepresentation;
-import com.polydes.common.sys.Mime;
-import com.polydes.common.sys.SysFile;
-import com.polydes.common.sys.SysFolder;
-
-import stencyl.sw.SW;
-import stencyl.sw.Session;
-import stencyl.sw.app.gamecontroller.GameInterfaceServer;
-import stencyl.sw.app.gamecontroller.GameInterfaceServer.AssetType;
+import stencyl.app.sys.Mime;
+import stencyl.core.api.pnodes.HierarchyModel;
+import stencyl.core.api.pnodes.HierarchyRepresentation;
+import stencyl.core.sys.SysFile;
+import stencyl.core.sys.SysFolder;
+import stencyl.sw.app.main.SW;
+import stencyl.sw.core.Session;
+import stencyl.sw.core.gamesession.controller.GameInterfaceServer;
+import stencyl.sw.core.gamesession.controller.GameInterfaceServer.AssetType;
 
 public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFolder>
 {

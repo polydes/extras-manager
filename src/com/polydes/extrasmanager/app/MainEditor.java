@@ -1,41 +1,34 @@
 package com.polydes.extrasmanager.app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
+import com.polydes.extrasmanager.ExtrasManagerExtension.ExtrasManager;
 import com.polydes.extrasmanager.app.pages.MainPage;
 
 public class MainEditor extends JPanel
 {
-	private static MainEditor _instance;
+	public final ExtrasManager manager;
 	
 	private MainPage page;
 	
 	public static final Color SIDEBAR_COLOR = new Color(62, 62, 62);
 	
-	private MainEditor()
+	public MainEditor(ExtrasManager manager)
 	{
 		super(new BorderLayout());
 		
-		page = MainPage.get();
+		this.manager = manager;
+		page = new MainPage(manager);
 		
 		add(page);
 	}
 	
-	public static MainEditor get()
+	public void disposePages()
 	{
-		if(_instance == null)
-			_instance = new MainEditor();
-		
-		return _instance;
-	}
-	
-	public static void disposePages()
-	{
-		MainPage.dispose();
-		_instance = null;
+		page.dispose();
+		page = null;
 	}
 
 	public void gameSaved()

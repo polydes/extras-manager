@@ -1,30 +1,28 @@
 package com.polydes.extrasmanager.app.pages;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 
-import com.polydes.common.comp.MiniSplitPane;
-import com.polydes.common.sys.SysFile;
-import com.polydes.common.sys.SysFolder;
-import com.polydes.common.ui.filelist.TreePage;
-import com.polydes.extrasmanager.ExtrasManagerExtension;
+import com.polydes.extrasmanager.ExtrasManagerExtension.ExtrasManager;
+import com.polydes.extrasmanager.data.ExtrasNodeCreator;
 import com.polydes.extrasmanager.data.FilePreviewer;
 
-import stencyl.sw.util.UI;
+import stencyl.app.api.nodes.HierarchyModelInterface;
+import stencyl.app.comp.MiniSplitPane;
+import stencyl.app.comp.UI;
+import stencyl.app.comp.filelist.TreePage;
+import stencyl.core.api.pnodes.HierarchyModel;
+import stencyl.core.sys.FileMonitor;
+import stencyl.core.sys.SysFile;
+import stencyl.core.sys.SysFolder;
+import stencyl.sw.app.sys.SysFileUiProvider;
 
 public class MainPage extends JPanel
 {
-	private static MainPage _instance;
-	
 	public static final int DEFAULT_SPLITPANE_WIDTH = 180;
 	public static final Color BG_COLOR = new Color(43, 43, 43);
-	
+
 	protected JComponent currView;
 	public JPanel navwindow;
 	public JPanel navbar;
@@ -34,22 +32,7 @@ public class MainPage extends JPanel
 	
 	protected MiniSplitPane splitPane;
 	
-	public static MainPage get()
-	{
-		if (_instance == null)
-			_instance = new MainPage();
-
-		return _instance;
-	}
-
-	public static void dispose()
-	{
-		if(_instance != null)
-			_instance.localDispose();
-		_instance = null;
-	}
-	
-	private void localDispose()
+	public void dispose()
 	{
 		removeAll();
 		
@@ -67,11 +50,23 @@ public class MainPage extends JPanel
 		FilePreviewer.endPreview();
 	}
 	
-	protected MainPage()
+	public MainPage(ExtrasManager manager)
 	{
 		super(new BorderLayout());
+
+		HierarchyModel<SysFile,SysFolder> model = manager.getModel();
+		HierarchyModelInterface<SysFile, SysFolder> extrasModelInterface = new HierarchyModelInterface<>(model);
 		
-		treePage = new TreePage<SysFile, SysFolder>(ExtrasManagerExtension.getModel());
+		FileMonitor monitor = FileMonitor.getMonitor(manager.getProject());
+		extrasModelInterface.setNodeCreator(new ExtrasNodeCreator(monitor, extrasModelInterface));
+		
+		SysFileUiProvider uiProvider = new SysFileUiProvider(extrasModelInterface);
+		
+		treePage = new TreePage<>(extrasModelInterface);
+		treePage.setNodeIconProvider(uiProvider);
+		treePage.setNodeViewProvider(uiProvider);
+		treePage.setInnerCellSize(92, 80);
+		treePage.setIconSize(80, 80);
 		
 		treePage.getTree().getTree().setRootVisible(true);
 		treePage.getTree().setListEditEnabled(true);

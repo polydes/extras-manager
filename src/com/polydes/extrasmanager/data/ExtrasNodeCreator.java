@@ -1,7 +1,5 @@
 package com.polydes.extrasmanager.data;
 
-import static com.polydes.common.util.Lang.arraylist;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,22 +7,23 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.nodes.NodeCreator;
-import com.polydes.common.sys.FileMonitor;
-import com.polydes.common.sys.FileRenderer;
-import com.polydes.common.sys.SysFile;
-import com.polydes.common.sys.SysFileOperations;
-import com.polydes.common.sys.SysFolder;
-
-import stencyl.sw.util.FileHelper;
+import stencyl.app.api.nodes.HierarchyModelInterface;
+import stencyl.app.api.nodes.NodeCreator;
+import stencyl.app.sys.FileRenderer;
+import stencyl.core.io.FileHelper;
+import stencyl.core.sys.FileMonitor;
+import stencyl.core.sys.SysFile;
+import stencyl.core.sys.SysFileOperations;
+import stencyl.core.sys.SysFolder;
 
 public class ExtrasNodeCreator implements NodeCreator<SysFile,SysFolder>
 {
-	HierarchyModel<SysFile,SysFolder> model;
+	FileMonitor monitor;
+	HierarchyModelInterface<SysFile,SysFolder> model;
 	
-	public ExtrasNodeCreator(HierarchyModel<SysFile,SysFolder> model)
+	public ExtrasNodeCreator(FileMonitor monitor, HierarchyModelInterface<SysFile,SysFolder> model)
 	{
+		this.monitor = monitor;
 		this.model = model;
 	}
 	
@@ -42,9 +41,8 @@ public class ExtrasNodeCreator implements NodeCreator<SysFile,SysFolder>
 	}
 
 	@Override
-	public SysFile createNode(CreatableNodeInfo selected, String nodeName)
+	public SysFile createNode(CreatableNodeInfo selected, String nodeName, SysFolder sfolder, int insertPosition)
 	{
-		SysFolder sfolder = model.getCreationParentFolder(model.getSelection());
 		File folder = sfolder.getFile();
 		
 		if(selected.name.equals("Folder"))
@@ -73,19 +71,19 @@ public class ExtrasNodeCreator implements NodeCreator<SysFile,SysFolder>
 			}
 		}
 		
-		FileMonitor.refresh();
+		monitor.refresh();
 		
 		return null;
 	}
 	
-	ArrayList<NodeAction<SysFile>> actions = arraylist(
+	ArrayList<NodeAction<SysFile>> actions = new ArrayList<>(List.of(
 		new NodeAction<SysFile>("Rename", null, (file) -> FileEditor.rename(file.getFile())),
 		new NodeAction<SysFile>("Edit", null, (file) -> FileEditor.edit(file.getFile())),
 		new NodeAction<SysFile>("Delete", null, (file) -> {
 			FileHelper.delete(file.getFile());
-			FileMonitor.refresh();
+			monitor.refresh();
 		})
-	);
+	));
 	
 	@Override
 	public ArrayList<NodeAction<SysFile>> getNodeActions(SysFile[] targets)

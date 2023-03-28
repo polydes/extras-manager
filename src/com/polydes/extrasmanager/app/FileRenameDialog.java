@@ -1,27 +1,20 @@
 package com.polydes.extrasmanager.app;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import stencyl.sw.lnf.Theme;
-import stencyl.sw.loc.LanguagePack;
-import stencyl.sw.util.comp.ButtonBarFactory;
-import stencyl.sw.util.comp.GroupButton;
-import stencyl.sw.util.dg.StencylDialog;
+import stencyl.app.comp.ButtonBarFactory;
+import stencyl.app.comp.GroupButton;
+import stencyl.app.comp.dg.StencylDialog;
+import stencyl.app.lnf.Theme;
+import stencyl.core.loc.LanguagePack;
 
 public class FileRenameDialog extends StencylDialog
 {

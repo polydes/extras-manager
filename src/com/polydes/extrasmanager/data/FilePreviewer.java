@@ -1,21 +1,16 @@
 package com.polydes.extrasmanager.data;
 
-import java.awt.Color;
-import java.awt.TextArea;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.polydes.common.sys.Mime;
-import com.polydes.common.sys.Mime.BasicType;
-import com.polydes.common.sys.SysFile;
-
-import stencyl.sw.util.FileHelper;
+import stencyl.app.sys.Mime;
+import stencyl.app.sys.Mime.BasicType;
+import stencyl.core.io.FileHelper;
+import stencyl.core.sys.SysFile;
 
 public class FilePreviewer
 {

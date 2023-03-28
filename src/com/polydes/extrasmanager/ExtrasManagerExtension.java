@@ -1,164 +1,204 @@
 package com.polydes.extrasmanager;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.sys.FileMonitor;
-import com.polydes.common.sys.Mime.BasicType;
-import com.polydes.common.sys.SysFile;
-import com.polydes.common.sys.SysFolder;
-import com.polydes.common.ui.propsheet.PropertiesSheetStyle;
-import com.polydes.common.ui.propsheet.PropertiesSheetSupport;
 import com.polydes.extrasmanager.app.MainEditor;
-import com.polydes.extrasmanager.data.ExtrasNodeCreator;
 import com.polydes.extrasmanager.data.FileEditor;
 import com.polydes.extrasmanager.data.FileUpdateWatcher;
 import com.polydes.extrasmanager.io.FileOperations;
 
-import stencyl.core.lib.Game;
-import stencyl.sw.ext.BaseExtension;
-import stencyl.sw.ext.OptionsPanel;
-import stencyl.sw.util.FileHelper;
-import stencyl.sw.util.Locations;
-import stencyl.sw.util.dg.DialogPanel;
+import stencyl.app.comp.datatypes.filepath.FilePathEditor;
+import stencyl.app.comp.dg.DialogPanel;
+import stencyl.app.comp.propsheet.DialogPanelWrapper;
+import stencyl.app.comp.propsheet.PropertiesSheetStyle;
+import stencyl.app.comp.propsheet.PropertiesSheetSupport;
+import stencyl.app.ext.OptionsAddon;
+import stencyl.app.ext.OptionsPanel;
+import stencyl.app.ext.PageAddon;
+import stencyl.app.sys.Mime.BasicType;
+import stencyl.core.api.pnodes.HierarchyModel;
+import stencyl.core.ext.addon.AddonContributor;
+import stencyl.core.ext.addon.ContributorAddonData;
+import stencyl.core.ext.app.AppExtension;
+import stencyl.core.io.FileHelper;
+import stencyl.core.lib.IProject;
+import stencyl.core.lib.ProjectManager;
+import stencyl.core.sys.FileMonitor;
+import stencyl.core.sys.SysFile;
+import stencyl.core.sys.SysFolder;
+import stencyl.sw.app.center.GameLibrary;
+import stencyl.sw.app.ext.ExtensionCP;
+import stencyl.sw.core.lib.game.Game;
 
-public class ExtrasManagerExtension extends BaseExtension
+public class ExtrasManagerExtension extends AppExtension
 {
+	public static class ExtrasManager
+	{
+		private final IProject project;
+		private final HierarchyModel<SysFile,SysFolder> model;
+		private final FileUpdateWatcher updateWatcher;
+		
+		private final String gameDir;
+		private final String extrasDir;
+		
+		private MainEditor mainEditor;
+		
+		private AddonContributor projectAddons;
+
+		public ExtrasManager(IProject project)
+		{
+			this.project = project;
+			Game game = (Game) project;
+			
+			gameDir = project.getLocation();
+			extrasDir = gameDir + "extras/";
+			File extrasFile = new File(extrasDir);
+
+			if(!extrasFile.exists())
+				extrasFile.mkdir();
+
+			model = FileMonitor.getExtrasModel(game);
+
+			String extensionId = ExtrasManagerExtension.get().getManifest().id;
+			File templatesFile = new File(project.getFiles().getExtensionGameDataLocation(extensionId), "templates");
+
+			if(!templatesFile.exists())
+			{
+				templatesFile.mkdir();
+				loadDefaults(templatesFile);
+			}
+
+			FileOperations.templatesFile = templatesFile;
+
+			updateWatcher = new FileUpdateWatcher(model);
+			
+			projectAddons = new AddonContributor()
+			{
+				final ContributorAddonData data = new ContributorAddonData(new HashMap<>());
+				
+				@Override
+				public String getAddonContributorId()
+				{
+					return "app-"+_instance.getManifest().id;
+				}
+
+				@Override
+				public ContributorAddonData getAddonData()
+				{
+					return data;
+				}
+
+				@Override
+				public boolean hasInitializedAddonData()
+				{
+					return true;
+				}
+			};
+			
+			projectAddons.setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, (PageAddon) this::getEditor);
+			
+			project.getAddonManager().addDataForContributor(projectAddons);
+		}
+
+		public IProject getProject()
+		{
+			return project;
+		}
+
+		public HierarchyModel<SysFile,SysFolder> getModel()
+		{
+			return model;
+		}
+		
+		public MainEditor getEditor()
+		{
+			if(mainEditor == null)
+				mainEditor = new MainEditor(this);
+			return mainEditor;
+		}
+		
+		public void save()
+		{
+			if(mainEditor != null)
+				mainEditor.gameSaved();
+		}
+		
+		public void close()
+		{
+			project.getAddonManager().removeDataForContributor(projectAddons);
+			updateWatcher.dispose();
+			mainEditor.disposePages();
+		}
+	}
+	
+	private Map<IProject, ExtrasManager> projectExtrasManager = new HashMap<>();
+	
 	private static ExtrasManagerExtension _instance;
 	
-	private static HierarchyModel<SysFile,SysFolder> model;
-	private static FileUpdateWatcher updateWatcher;
-	
-	private static boolean gameOpen;
-	
-	private String gameDir;
-	private String extrasDir;
-
 	public static ExtrasManagerExtension get()
 	{
 		return _instance;
 	}
-
-	public static HierarchyModel<SysFile,SysFolder> getModel()
-	{
-		return model;
-	}
 	
-	/*
-	 * Happens when StencylWorks launches.
-	 * 
-	 * Avoid doing anything time-intensive in here, or it will slow down launch.
-	 */
 	@Override
-	public void onStartup()
+	public void onLoad()
 	{
-		super.onStartup();
+		super.onLoad();
 		
 		_instance = this;
-		
-		isInMenu = true;
-		menuName = "Extras Manager";
 
-		isInGameCenter = true;
-		gameCenterName = "Extras Manager";
-
-		gameDir = "";
+		FileEditor.typeProgramMap.put(BasicType.TEXT, readStringProp("textEditorPath", null));
+		FileEditor.typeProgramMap.put(BasicType.IMAGE, readStringProp("imageEditorPath", null));
 		
+		for(IProject project : ProjectManager.getOpenedProjects())
+		{
+			projectExtrasManager.put(project, new ExtrasManager(project));
+		}
+		
+		setAddon(ExtensionCP.EXTENSION_CP_OPTIONS_ADDONS, (OptionsAddon) ExtrasManagerExtension.this::getOptions);
+
 //		requestFolderOwnership(this, dataFolderName);
 	}
 
-	/*
-	 * Happens when the extension is told to display.
-	 * 
-	 * May happen multiple times during the course of the app.
-	 * 
-	 * A good way to handle this is to make your extension a singleton.
-	 */
 	@Override
-	public void onActivate()
+	public void onUnload()
 	{
-		
-	}
+		super.onUnload();
 
-	@Override
-	public JPanel onGameCenterActivate()
-	{
-		if(!gameOpen && Game.getGame() != null)
-			onGameOpened(Game.getGame());
-		return MainEditor.get();
-	}
-
-	/*
-	 * Happens when StencylWorks closes.
-	 * 
-	 * Usually used to save things out.
-	 */
-	@Override
-	public void onDestroy()
-	{
-		
+		for(IProject project : ProjectManager.getOpenedProjects())
+		{
+			projectExtrasManager.remove(project).close();
+		}
 	}
 
 	/*
 	 * Happens when a game is saved.
 	 */
 	@Override
-	public void onGameSave(Game game)
+	public void onGameSave(IProject project)
 	{
-		if(gameOpen)
-			MainEditor.get().gameSaved();
-	}
-
-	/*
-	 * Happens when the user runs, previews or exports the game.
-	 */
-	@Override
-	public void onGameBuild(Game game)
-	{
-		onGameSave(game);
+		var manager = projectExtrasManager.get(project);
+		if(manager != null)
+			manager.save();
 	}
 
 	/*
 	 * Happens when a game is opened.
 	 */
 	@Override
-	public void onGameOpened(Game game)
+	public void onGameOpened(IProject project)
 	{
-		gameOpen = true;
-		
-		gameDir = Locations.getGameLocation(game);
-		extrasDir = gameDir + "extras/";
-		File extrasFile = new File(extrasDir);
-		
-		if(!extrasFile.exists())
-			extrasFile.mkdir();
-		
-		model = FileMonitor.getExtrasModel();
-		model.setNodeCreator(new ExtrasNodeCreator(model));
-		
-		File templatesFile = new File(Locations.getExtensionGameDataLocation(game, getManifest().id), "templates");
-		
-		if(!templatesFile.exists())
-		{
-			templatesFile.mkdir();
-			loadDefaults(templatesFile);
-		}
-		
-		FileOperations.templatesFile = templatesFile;
-		
-		FileEditor.typeProgramMap.put(BasicType.TEXT, readStringProp("textEditorPath", null));
-		FileEditor.typeProgramMap.put(BasicType.IMAGE, readStringProp("imageEditorPath", null));
-		
-		updateWatcher = new FileUpdateWatcher(model);
+		projectExtrasManager.put(project, new ExtrasManager(project));
 	}
 	
-	public void loadDefaults(File templates)
+	public static void loadDefaults(File templates)
 	{
 		try
 		{
@@ -183,23 +223,14 @@ public class ExtrasManagerExtension extends BaseExtension
 	 * Happens when a game is closed.
 	 */
 	@Override
-	public void onGameClosed(Game game)
+	public void onGameClosed(IProject project)
 	{
-		super.onGameClosed(game);
-
-		updateWatcher.dispose();
-		model = null;
-		
-		gameDir = "";
-		extrasDir = "";
-		
-		MainEditor.disposePages();
-		
-		gameOpen = false;
+		var manager = projectExtrasManager.remove(project);
+		if(manager != null)
+			manager.close();
 	}
 
-	@Override
-	public OptionsPanel onOptions()
+	public OptionsPanel getOptions()
 	{
 		return new OptionsPanel()
 		{
@@ -210,12 +241,12 @@ public class ExtrasManagerExtension extends BaseExtension
 			{
 				DialogPanel panel = new DialogPanel(PropertiesSheetStyle.DARK.pageBg);
 				
-				sheet = new PropertiesSheetSupport(panel, properties);
+				sheet = new PropertiesSheetSupport(new DialogPanelWrapper(panel), PropertiesSheetStyle.DARK, properties);
 				
 				sheet.build()
 					.header("Options")
-					.field("textEditorPath").label("Text Editor")._filePath().add()
-					.field("imageEditorPath").label("Image Editor")._filePath().add()
+					.field("textEditorPath").label("Text Editor")._editor(FilePathEditor.BUILDER).add()
+					.field("imageEditorPath").label("Image Editor")._editor(FilePathEditor.BUILDER).add()
 					.finish();
 				
 				panel.addFinalRow(new JLabel());
@@ -245,25 +276,5 @@ public class ExtrasManagerExtension extends BaseExtension
 			{
 			}
 		};
-	}
-
-	/*
-	 * Happens when the extension is first installed.
-	 */
-	@Override
-	public void onInstall()
-	{
-		
-	}
-
-	/*
-	 * Happens when the extension is uninstalled.
-	 * 
-	 * Clean up files.
-	 */
-	@Override
-	public void onUninstall()
-	{
-		
 	}
 }

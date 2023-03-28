@@ -4,9 +4,18 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_20
+    targetCompatibility = JavaVersion.VERSION_20
 }
+
+tasks.withType(JavaCompile).each {
+	it.options.compilerArgs.add('--enable-preview')
+}
+
+//building an artifact using a local-only build artifact of Stencyl
+var localBuild = project.hasProperty("local_build")
+//developing as a submodule of Stencyl
+var localDev = project.hasProperty("local_dev")
 
 group = 'com.polydes'
 version = rootProject.file('version.txt').text.trim()
@@ -29,20 +38,29 @@ processResources {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        url "https://www.stencyl.com/dl/maven2/releases"
-    }
-    maven {
-        url "https://www.stencyl.com/dl/maven2/snapshots"
-    }
+	if(localBuild) {
+		mavenLocal()
+	}
+	mavenCentral()
+	maven {
+		url "https://www.stencyl.com/dl/maven2/releases"
+	}
+	maven {
+		url "https://www.stencyl.com/dl/maven2/snapshots"
+	}
 }
 
 dependencies {
     //Stencyl and its dependencies
     implementation enforcedPlatform('com.stencyl:stencyl-platform:4.1.0-SNAPSHOT')
-    compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
-    compileOnly group: 'commons-io',  name: 'commons-io'
+	if(localDev) {
+		compileOnly project(":")
+		compileOnly project(":stencyl-v5-core")
+		compileOnly project(":stencyl-v5-toolset")
+	} else {
+		compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
+	}
+	compileOnly group: 'commons-io',  name: 'commons-io'
 
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 }
@@ -57,7 +75,7 @@ jar {
 			"Extension-Main-Class": "com.polydes.extrasmanager.ExtrasManagerExtension",
 			"Extension-Version": version,
 			"Extension-Icon": "com/polydes/extrasmanager/res/icon.png",
-			"Extension-Dependencies": "stencyl-4.1.0-b10157",
+			"Extension-Dependencies": "stencyl-4.1.0-b11582",
 			"Extension-Type": "normal",
 			"Extension-Name": "Extras Manager Extension",
 			"Extension-Description": "Manage extra data files.",
@@ -69,12 +87,8 @@ jar {
 	}
 }
 
-tasks.register('installToolsetToWorkspace', Copy) {
+tasks.register('installToWorkspace', Copy) {
     from(tasks.named("jar"))
 	into stencylWorkspace+"/extensions"
 	rename { fileName -> "com.polydes.extrasmanager.jar" }
-}
-
-tasks.register('installToWorkspace') {
-	dependsOn 'installToolsetToWorkspace'
 }
