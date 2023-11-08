@@ -69,11 +69,11 @@ public class ExtrasManagerExtension extends AppExtension
 			String extensionId = ExtrasManagerExtension.get().getManifest().id;
 			File templatesFile = new File(project.getFiles().getExtensionGameDataLocation(extensionId), "templates");
 
-			if(!templatesFile.exists())
-			{
-				templatesFile.mkdir();
-				loadDefaults(templatesFile);
-			}
+//			if(!templatesFile.exists())
+//			{
+//				templatesFile.mkdir();
+//				loadDefaults(templatesFile);
+//			}
 
 			FileOperations.templatesFile = templatesFile;
 
