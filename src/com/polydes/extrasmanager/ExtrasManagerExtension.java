@@ -134,7 +134,8 @@ public class ExtrasManagerExtension extends AppExtension
 		{
 			project.getAddonManager().removeDataForContributor(projectAddons);
 			updateWatcher.dispose();
-			mainEditor.disposePages();
+			if(mainEditor != null)
+				mainEditor.disposePages();
 		}
 	}
 	
