@@ -22,10 +22,10 @@ import stencyl.app.comp.propsheet.PropertiesSheetSupport;
 import stencyl.app.ext.OptionsAddon;
 import stencyl.app.ext.OptionsPanel;
 import stencyl.app.ext.PageAddon;
+import stencyl.app.ext.PageAddon.ExtensionPageAddon;
 import stencyl.app.sys.Mime.BasicType;
 import stencyl.core.api.pnodes.HierarchyModel;
 import stencyl.core.ext.addon.AddonContributor;
-import stencyl.core.ext.addon.ContributorAddonData;
 import stencyl.core.ext.app.AppExtension;
 import stencyl.core.io.FileHelper;
 import stencyl.core.lib.IProject;
@@ -78,31 +78,18 @@ public class ExtrasManagerExtension extends AppExtension
 			FileOperations.templatesFile = templatesFile;
 
 			updateWatcher = new FileUpdateWatcher(model);
-			
-			projectAddons = new AddonContributor()
+			projectAddons = new AddonContributor(_instance.getAddons().getAddonContributorId());
+
+			PageAddon extrasSidebarPage = new ExtensionPageAddon(ExtrasManagerExtension.get())
 			{
-				final ContributorAddonData data = new ContributorAddonData(new HashMap<>());
-				
 				@Override
-				public String getAddonContributorId()
+				public JPanel getPage()
 				{
-					return "app-"+_instance.getManifest().id;
-				}
-
-				@Override
-				public ContributorAddonData getAddonData()
-				{
-					return data;
-				}
-
-				@Override
-				public boolean hasInitializedAddonData()
-				{
-					return true;
+					return getEditor();
 				}
 			};
 			
-			projectAddons.setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, (PageAddon) this::getEditor);
+			projectAddons.setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, extrasSidebarPage);
 			
 			project.getAddonManager().addDataForContributor(projectAddons);
 		}
@@ -163,7 +150,7 @@ public class ExtrasManagerExtension extends AppExtension
 			projectExtrasManager.put(project, new ExtrasManager(project));
 		}
 		
-		setAddon(ExtensionCP.EXTENSION_CP_OPTIONS_ADDONS, (OptionsAddon) ExtrasManagerExtension.this::getOptions);
+		getAddons().setAddon(ExtensionCP.EXTENSION_CP_OPTIONS_ADDONS, (OptionsAddon) ExtrasManagerExtension.this::getOptions);
 
 //		requestFolderOwnership(this, dataFolderName);
 	}
