@@ -1,0 +1,5 @@
+tasks.register('installToWorkspace', Copy) {
+    from(tasks.named("toolset:jar"))
+	into stencylWorkspace+"/extensions"
+	rename { fileName -> "com.polydes.extrasmanager.jar" }
+}

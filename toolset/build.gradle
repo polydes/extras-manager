@@ -32,7 +32,7 @@ processResources {
     from('res') {
     	into 'res/com/polydes/extrasmanager'
     }
-    from('icon.png') {
+    from(rootProject.file('icon.png')) {
         into 'com/polydes/extrasmanager/res'
     }
 }
@@ -85,10 +85,4 @@ jar {
 			"Extension-Internal-Version": "1"
 		)
 	}
-}
-
-tasks.register('installToWorkspace', Copy) {
-    from(tasks.named("jar"))
-	into stencylWorkspace+"/extensions"
-	rename { fileName -> "com.polydes.extrasmanager.jar" }
 }
