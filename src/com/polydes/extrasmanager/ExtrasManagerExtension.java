@@ -58,7 +58,7 @@ public class ExtrasManagerExtension extends AppExtension
 			Game game = (Game) project;
 			
 			gameDir = project.getLocation();
-			extrasDir = gameDir + "extras/";
+			extrasDir = project.getLocation("extras");
 			File extrasFile = new File(extrasDir);
 
 			if(!extrasFile.exists())
