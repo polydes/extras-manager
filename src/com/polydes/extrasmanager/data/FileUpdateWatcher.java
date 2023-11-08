@@ -45,11 +45,10 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 			return;
 		}
 		
-		if(evt.getSource() instanceof SysFile && evt.getPropertyName().equals(SysFile.STATE))
+		if(evt.getSource() instanceof SysFile modified && evt.getPropertyName().equals(SysFile.STATE))
 		{
-			SysFile modified = (SysFile) evt.getSource();
-			
-			String extrasPath = ((SysFile) model.getRootBranch()).getFile().getAbsolutePath();
+
+            String extrasPath = (model.getRootBranch()).getFile().getAbsolutePath();
 			String modifiedPath = modified.getFile().getAbsolutePath();
 			String assetPath = "assets/data/" + fs(modifiedPath.substring(extrasPath.length() + 1));
 			

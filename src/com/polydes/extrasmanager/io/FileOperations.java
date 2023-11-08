@@ -52,7 +52,7 @@ public class FileOperations
 				File target = new File(targetParent, newName);
 				if(f.isDirectory())
 				{
-					ArrayList<File> exclude = new ArrayList<File>();
+					ArrayList<File> exclude = new ArrayList<>();
 					exclude.add(target);
 					FileHelper.copyDirectory(f, target, exclude);
 				}
@@ -79,8 +79,8 @@ public class FileOperations
 		Choice result = YesNoQuestionDialog.showYesNoPrompt("Delete Files", "Are you sure you want to delete the selected files?");
 		if(result == Choice.YES)
 		{
-			for(Object o : files)
-				FileHelper.delete((File) o);
+			for(File f : files)
+				FileHelper.delete(f);
 			
 			FileMonitor.refreshMonitorsWithFile(files.get(0).getAbsolutePath());
 		}
@@ -102,7 +102,7 @@ public class FileOperations
 
 	public static List<File> asFiles(Object[] a)
 	{
-		ArrayList<File> files = new ArrayList<File>(a.length);
+		ArrayList<File> files = new ArrayList<>(a.length);
 		for(Object o : a)
 			files.add((File) o);
 		return files;

@@ -14,7 +14,7 @@ import stencyl.sw.app.main.SW;
 
 public class FileEditor
 {
-	public static HashMap<BasicType, String> typeProgramMap = new HashMap<BasicType, String>();
+	public static HashMap<BasicType, String> typeProgramMap = new HashMap<>();
 	
 	public static void edit(File f)
 	{

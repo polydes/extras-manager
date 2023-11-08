@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ExtrasUtil
 {
-	private static HashSet<String> blankSet = new HashSet<String>();
+	private static HashSet<String> blankSet = new HashSet<>();
 	
 	/**
 	 * @param toOrder
@@ -19,8 +19,8 @@ public class ExtrasUtil
 		if(toExclude == null)
 			toExclude = blankSet;
 		
-		ArrayList<File> folders = new ArrayList<File>();
-		ArrayList<File> files = new ArrayList<File>();
+		ArrayList<File> folders = new ArrayList<>();
+		ArrayList<File> files = new ArrayList<>();
 		
 		for(File f : toOrder)
 		{

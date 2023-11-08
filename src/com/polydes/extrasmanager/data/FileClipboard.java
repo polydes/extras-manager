@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class FileClipboard
 {
-	private static ArrayList<File> files = new ArrayList<File>();
-	public static ArrayList<Listener> listeners = new ArrayList<Listener>();
+	private static ArrayList<File> files = new ArrayList<>();
+	public static ArrayList<Listener> listeners = new ArrayList<>();
 	public static int COPY = 0;
 	public static int CUT = 1;
 	public static int op = COPY;
