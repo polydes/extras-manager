@@ -75,7 +75,7 @@ jar {
 			"Extension-Main-Class": "com.polydes.extrasmanager.ExtrasManagerExtension",
 			"Extension-Version": version,
 			"Extension-Icon": "com/polydes/extrasmanager/res/icon.png",
-			"Extension-Dependencies": "stencyl-4.1.0-b11582",
+			"Extension-Dependencies": "stencyl-4.1.0-b12043",
 			"Extension-Type": "normal",
 			"Extension-Name": "Extras Manager Extension",
 			"Extension-Description": "Manage extra data files.",
