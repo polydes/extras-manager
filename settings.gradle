@@ -1,4 +1,3 @@
 rootProject.name = 'extras-manager'
 
 include('toolset')
-project(':toolset').name = 'extras-manager'
