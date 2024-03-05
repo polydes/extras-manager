@@ -40,15 +40,14 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-		if(!Session.instance().isGCIAutoupdateEnabled())
+		if(!Session.instance().isGCIAutoupdateEnabled() || !SW.get().isGameInterfaceServerLoaded())
 		{
 			return;
 		}
 		
 		if(evt.getSource() instanceof SysFile modified && evt.getPropertyName().equals(SysFile.STATE))
 		{
-
-            String extrasPath = (model.getRootBranch()).getFile().getAbsolutePath();
+			String extrasPath = (model.getRootBranch()).getFile().getAbsolutePath();
 			String modifiedPath = modified.getFile().getAbsolutePath();
 			String assetPath = "assets/data/" + fs(modifiedPath.substring(extrasPath.length() + 1));
 			
