@@ -60,7 +60,7 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 					byte[] toSend = Files.readAllBytes(modified.getFile().toPath());
 					
 					AssetType assetType = null;
-					switch(Mime.getType(modified.getFile()))
+					switch(Mime.getTypeByName(modified.getFile()))
 					{
 						case TEXT: assetType = AssetType.TEXT; break;
 						case IMAGE: assetType = AssetType.IMAGE; break;

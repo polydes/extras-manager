@@ -19,7 +19,7 @@ public class FilePreviewer
 	
 	public static void preview(SysFile f)
 	{
-		BasicType type = Mime.getType(f.getFile());
+		BasicType type = Mime.getTypeByName(f.getFile());
 		JComponent toPreview = null;
 		
 		if(type == BasicType.IMAGE)

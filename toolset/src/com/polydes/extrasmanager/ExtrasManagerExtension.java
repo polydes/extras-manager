@@ -17,12 +17,12 @@ import com.polydes.extrasmanager.io.FileOperations;
 import stencyl.app.comp.datatypes.filepath.FilePathEditor;
 import stencyl.app.comp.dg.DialogPanel;
 import stencyl.app.comp.propsheet.DialogPanelWrapper;
-import stencyl.app.comp.propsheet.PropertiesSheetStyle;
 import stencyl.app.comp.propsheet.PropertiesSheetSupport;
 import stencyl.app.ext.OptionsAddon;
 import stencyl.app.ext.OptionsPanel;
 import stencyl.app.ext.PageAddon;
 import stencyl.app.ext.PageAddon.ExtensionPageAddon;
+import stencyl.app.lnf.Theme;
 import stencyl.app.sys.Mime.BasicType;
 import stencyl.core.api.pnodes.HierarchyModel;
 import stencyl.core.ext.addon.AddonContributor;
@@ -227,9 +227,9 @@ public class ExtrasManagerExtension extends AppExtension
 			@Override
 			public void init()
 			{
-				DialogPanel panel = new DialogPanel(PropertiesSheetStyle.DARK.pageBg);
+				DialogPanel panel = new DialogPanel(Theme.BG_COLOR);
 				
-				sheet = new PropertiesSheetSupport(new DialogPanelWrapper(panel), PropertiesSheetStyle.DARK, properties);
+				sheet = new PropertiesSheetSupport(new DialogPanelWrapper(panel), properties);
 				
 				sheet.build()
 					.header("Options")

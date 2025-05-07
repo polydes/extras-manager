@@ -18,7 +18,7 @@ public class FileEditor
 	
 	public static void edit(File f)
 	{
-		String exec = typeProgramMap.get(Mime.getType(f));
+		String exec = typeProgramMap.get(Mime.getTypeByName(f));
 		try
 		{
 			if(exec == null || exec.length() <= 2)

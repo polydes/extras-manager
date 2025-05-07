@@ -136,8 +136,8 @@ public class FileRenameDialog extends StencylDialog
 	@Override
 	public JPanel createButtonPanel() 
 	{
-		okButton = new GroupButton(0);
-		JButton cancelButton = new GroupButton(0);
+		okButton = new GroupButton(GroupButton.GROUP_SINGLE);
+		JButton cancelButton = new GroupButton(GroupButton.GROUP_SINGLE);
 
 		okButton.setAction
 		(
