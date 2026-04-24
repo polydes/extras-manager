@@ -7,11 +7,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import stencyl.app.sys.Mime;
+import stencyl.core.SWC;
 import stencyl.core.api.pnodes.HierarchyModel;
 import stencyl.core.api.pnodes.HierarchyRepresentation;
 import stencyl.core.sys.SysFile;
 import stencyl.core.sys.SysFolder;
-import stencyl.sw.app.main.SW;
 import stencyl.sw.core.Session;
 import stencyl.sw.core.gamesession.controller.GameInterfaceServer;
 import stencyl.sw.core.gamesession.controller.GameInterfaceServer.AssetType;
@@ -40,7 +40,7 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
-		if(!Session.instance().isGCIAutoupdateEnabled() || !SW.get().isGameInterfaceServerLoaded())
+		if(!Session.instance().isGCIAutoupdateEnabled() || !(SWC.get(GameInterfaceServer.class) instanceof GameInterfaceServer server))
 		{
 			return;
 		}
@@ -50,8 +50,6 @@ public class FileUpdateWatcher implements HierarchyRepresentation<SysFile,SysFol
 			String extrasPath = (model.getRootBranch()).getFile().getAbsolutePath();
 			String modifiedPath = modified.getFile().getAbsolutePath();
 			String assetPath = "assets/data/" + fs(modifiedPath.substring(extrasPath.length() + 1));
-			
-			GameInterfaceServer server = SW.get().getGameInterfaceServer();
 			
 			if(!server.getClients().isEmpty())
 			{
