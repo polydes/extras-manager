@@ -4,8 +4,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.withType(JavaCompile).each {
@@ -43,10 +43,10 @@ repositories {
 	}
 	mavenCentral()
 	maven {
-		url "https://www.stencyl.com/dl/maven2/releases"
+		url = "https://www.stencyl.com/dl/maven2/releases"
 	}
 	maven {
-		url "https://www.stencyl.com/dl/maven2/snapshots"
+		url = "https://www.stencyl.com/dl/maven2/snapshots"
 	}
 }
 
@@ -58,11 +58,11 @@ dependencies {
 		compileOnly project(":stencyl-v5-core")
 		compileOnly project(":stencyl-v5-toolset")
 	} else {
-		compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
+		compileOnly 'com.stencyl:stencyl:4.1.0-SNAPSHOT'
 	}
-	compileOnly group: 'commons-io',  name: 'commons-io'
+	compileOnly 'commons-io:commons-io'
 
-    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+    implementation 'org.imgscalr:imgscalr-lib:4.2'
 }
 
 jar {
