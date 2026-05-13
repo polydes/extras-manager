@@ -1,0 +1,29 @@
+{
+  "group": "com.polydes",
+  "id": "com.polydes.extrasmanager",
+  "name": "Extras Manager Extension",
+  "description": "Manage extra data files.",
+  "tags": ["workflow"],
+  "type": "normal",
+  "author": "Justin Espedal",
+  "website": "https://www.polydes.com/repo/toolset/com.polydes.extrasmanager",
+  "repository": "https://www.polydes.com/repo",
+  "target": "stencyl-4.2.0",
+  "version": "0.5.0",
+
+  "icon": "icon.png",
+
+  "toolset": {
+    "root": "toolset",
+    "src": [
+      {"type": "java", "path": "src"},
+      {"type": "res", "path": "res", "target": "res/com/polydes/extrasmanager"}
+    ],
+    "dependencies": [
+      "platform:commons-io:commons-io",
+      "maven:org.imgscalr:imgscalr-lib:4.2"
+    ],
+    "mainClass": "com.polydes.extrasmanager.ExtrasManagerExtension",
+    "internalVersion": "1"
+  }
+}

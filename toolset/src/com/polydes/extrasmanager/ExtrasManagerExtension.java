@@ -66,7 +66,7 @@ public class ExtrasManagerExtension extends AppExtension
 
 			model = FileMonitor.getExtrasModel(game);
 
-			String extensionId = ExtrasManagerExtension.get().getManifest().id;
+			String extensionId = ExtrasManagerExtension.get().getInfo().getID();
 			File templatesFile = new File(project.getFiles().getExtensionGameDataLocation(extensionId), "templates");
 
 //			if(!templatesFile.exists())

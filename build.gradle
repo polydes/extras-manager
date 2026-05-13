@@ -1,5 +1,7 @@
-tasks.register('installToWorkspace', Copy) {
-    from(project('toolset').tasks.named("jar"))
-	into stencylWorkspace+"/extensions"
-	rename { fileName -> "com.polydes.extrasmanager.jar" }
+plugins {
+    id("com.stencyl.gradle.extension") version "1.0.0"
+}
+
+stencyl {
+    fromJsonFile(file("stencyl-extension.json"))
 }
