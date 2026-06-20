@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-import com.polydes.extrasmanager.ExtrasManagerExtension.ExtrasManager;
+import com.polydes.extrasmanager.ProjectExtrasManager;
 import com.polydes.extrasmanager.data.ExtrasNodeCreator;
 import com.polydes.extrasmanager.data.FilePreviewer;
 
@@ -50,7 +50,7 @@ public class MainPage extends JPanel
 		FilePreviewer.endPreview();
 	}
 	
-	public MainPage(ExtrasManager manager)
+	public MainPage(ProjectExtrasManager manager)
 	{
 		super(new BorderLayout());
 
