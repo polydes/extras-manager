@@ -2,52 +2,8 @@
   "versions":
   [
     {
-      "date": "10/02/2015",
-      "changes": "Initial Repository Version.",
-      "version": "0.2.0",
-      "dependencies": "toolset-com.polydes.common-1.0.0"
-    },
-    {
-      "date": "05/02/2016",
-      "changes": "Compatibility for Stencyl b8816.",
-      "version": "0.2.1",
-      "dependencies": "toolset-com.polydes.common-1.0.0"
-    },
-    {
-      "date": "05/01/2017",
-      "changes": "Compatibility for Stencyl 3.5.0.",
-      "version": "0.4.0",
-      "dependencies": "stencyl-3.5.0"
-    },
-    {
-      "date": "10/27/2017",
-      "changes": "Send files to running games when updated.",
-      "version": "0.4.1",
-      "dependencies": "stencyl-3.5.0,stencyl-3.5.0-beta2"
-    },
-    {
-      "date": "12/18/2018",
-      "changes": "Update for Stencyl b10157.\nFixed error when closing games.",
-      "version": "0.4.2",
-      "dependencies": "stencyl-3.5.0,stencylbuild-10157"
-    },
-    {
-      "date": "07/23/2020",
-      "changes": "Always use forward slashes in asset paths sent through game controller.",
-      "version": "0.4.3",
-      "dependencies": "stencyl-3.5.0,stencylbuild-10157"
-    },
-    {
-      "date": "07/29/2023",
-      "changes": "Updates for Stencyl 4.1.0 beta (b11582)",
-      "version": "0.4.4",
-      "dependencies": "stencyl-4.1.0-b11582"
-    },
-    {
-      "date": "12/04/2023",
-      "changes": "Updates for Stencyl 4.1.0 beta (b12043)",
-      "version": "0.4.5",
-      "dependencies": "stencyl-4.1.0-b12043"
+      "version": "0.5.0",
+      "dependencies": "stencyl-4.2.0"
     }
   ]
 }
